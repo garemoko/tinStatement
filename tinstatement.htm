@@ -68,9 +68,9 @@ in a live situation.
 	</head>
 	<body >
 
-		<h1>Statement Generator</h1>
+		<h1>Statement Sender</h1>
 		<p>
-			This tool allows you to generate custom statements for version 0.95 of the Tin Can API.
+			This tool allows you to create and send custom statements for version 0.95 of the Tin Can API.
 		</p>
 
 		<!-- <input type="button" value="Build URL" name="btnSave" id="templateURL" class="button"/>
@@ -108,19 +108,24 @@ in a live situation.
 				<tr>
 					<td class="label">objectType:</td>
 					<td>
-					<select name="actorObjectType" id="actorObjectType" class="required">
+					<select name="actorObjectType" id="actorObjectType" class="required objectType">
 						<option value="Agent">Agent</option>
 						<option value="Group">Group</option>
 					</select></td>
 				</tr>
 			</table>
 			
+			<div id="actorAgent">
+				<h3>Agent</h3>
+			</div>
+			
+			<input type="button" value="+Agent" name="actorAgentAdd" id="actorAgentAdd" class="button displayNone agentAdd" />
+			<!--Add a blank actor at the bottom-->
+			<input type="button" value="-Agent" name="actorAgentRemove" id="actorAgentRemove" class="button displayNone agentRemove"/>
+			<!--Removes the first blank field (not neccessarily the bottom field)-->
 		</div>
 		
-		<input type="button" value="+Agent" name="actorAgentAdd" id="actorAgentAdd" class="button displayNone" />
-		<!--Add a blank actor at the bottom-->
-		<input type="button" value="-Agent" name="actorAgentRemove" id="actorAgentRemove" class="button displayNone"/>
-		<!--Removes the first blank field (not neccessarily the bottom field)-->
+		
 
 		<div class="section" id="verb">
 			<div class="background_div">
@@ -142,11 +147,11 @@ in a live situation.
 					<td  colspan="2" class="label label_heading">display:</td>
 				</tr>
 
-				<tr id="verbVerbDisplayButtonHolder">
+				<tr id="verbDisplayButtonHolder">
 					<td colspan="2" class="buttonHolder">
-					<input type="button" value="+Lang" name="verbVerbDisplayAdd" id="verbVerbDisplayAdd" class="button" />
+					<input type="button" value="+Lang" name="verbDisplayAdd" id="verbDisplayAdd" class="button displayAdd" />
 					<!--Add a blank field at the bottom-->
-					<input type="button" value="-Lang" name="verbVerbDisplayRemove" id="verbVerbDisplayRemove" class="button"/>
+					<input type="button" value="-Lang" name="verbDisplayRemove" id="verbDisplayRemove" class="button displayRemove"/>
 					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
 				</tr>
 			</table>
@@ -167,7 +172,7 @@ in a live situation.
 				<tr>
 					<td class="label">objectType:</td>
 					<td>
-					<select name="objectType" id="objectType" class="required">
+					<select name="objectType" id="objectType" class="required objectType">
 						<option value="Activity" selected="selected">Activity</option>
 						<!--<option value="Interaction">Interaction</option>-->
 						<option value="Agent">Agent</option>
@@ -198,32 +203,32 @@ in a live situation.
 				<tr>
 					<td  colspan="2" class="label label_heading activityNameHeading">name:</td>
 				</tr>
-				<tr id="activityActivityNameButtonHolder">
+				<tr id="activityNameButtonHolder">
 					<td colspan="2" class="buttonHolder">
-					<input type="button" value="+Lang" name="activityActivityNameAdd" id="activityActivityNameAdd" class="button" />
+					<input type="button" value="+Lang" name="activityNameAdd" id="activityNameAdd" class="button nameAdd" />
 					<!--Add a blank field at the bottom-->
-					<input type="button" value="-Lang" name="activityActivityNameRemove" id="activityActivityNameRemove" class="button"/>
+					<input type="button" value="-Lang" name="activityNameRemove" id="activityNameRemove" class="button nameRemove"/>
 					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
 				</tr>
 				<tr>
 					<td  colspan="2" class="label label_heading activityDescriptionHeading">description:</td>
 				</tr>
-				<tr id="activityActivityDescriptionButtonHolder">
+				<tr id="activityDescriptionButtonHolder">
 					<td colspan="2" class="buttonHolder">
-					<input type="button" value="+Lang" name="activityActivityDescriptionAdd" id="activityActivityDescriptionAdd" class="button" />
+					<input type="button" value="+Lang" name="activityDescriptionAdd" id="activityDescriptionAdd" class="button descriptionAdd" />
 					<!--Add a blank field at the bottom-->
-					<input type="button" value="-Lang" name="activityActivityDescriptionRemove" id="activityActivityDescriptionRemove" class="button"/>
+					<input type="button" value="-Lang" name="activityDescriptionRemove" id="activityDescriptionRemove" class="button descriptionRemove"/>
 					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
 				</tr>
 				
 				<tr>
 					<td  colspan="2" class="label label_heading activityDescriptionHeading">extensions:</td>
 				</tr>
-				<tr id="activityActivityExtensionButtonHolder">
+				<tr id="activityExtensionButtonHolder">
 					<td colspan="2" class="buttonHolder">
-					<input type="button" value="+Xtn" name="activityActivityExtensionAdd" id="activityActivityExtensionAdd" class="button" />
+					<input type="button" value="+Xtn" name="activityExtensionAdd" id="activityExtensionAdd" class="button extensionAdd" />
 					<!--Add a blank field at the bottom-->
-					<input type="button" value="-Xtn" name="activityActivityExtensionRemove" id="activityActivityExtensionRemove" class="button"/>
+					<input type="button" value="-Xtn" name="activityExtensionRemove" id="activityExtensionRemove" class="button extensionRemove"/>
 					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
 				</tr>
 				
@@ -232,9 +237,9 @@ in a live situation.
 			<div id="objectAgent" class="displayNone agentSubSection">
 				<h3>Agent</h3>
 			</div>
-			<input type="button" value="+Agent" name="objectAgentAdd" id="objectAgentAdd" class="button displayNone agentSubSection" />
+			<input type="button" value="+Agent" name="objectAgentAdd" id="objectAgentAdd" class="button displayNone agentAdd" />
 			<!--Add a blank actor at the bottom-->
-			<input type="button" value="-Agent" name="objectAgentRemove" id="objectAgentRemove" class="button displayNone agentSubSection"/>
+			<input type="button" value="-Agent" name="objectAgentRemove" id="objectAgentRemove" class="button displayNone agentRemove"/>
 			<!--Removes the first blank field (not neccessarily the bottom field)-->
 			<div class="displayNone">
 				<h3>SubStatement</h3>

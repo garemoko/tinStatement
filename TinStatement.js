@@ -1,6 +1,6 @@
 /*
 =============COPYRIGHT============ 
-Tin Book - An I-Read-This prototype for Tin Can API
+Tin Statement Sender - An I-Did-This prototype for Tin Can API 0.95
 Copyright (C) 2012  Andrew Downes
 
 This program is free software: you can redistribute it and/or modify
@@ -33,43 +33,43 @@ $(function(){
 	
 	
 	//Set up Actor
-	appendGroup('actor').addClass('displayNone');
-	appendAgent('actor');
+	appendGroup('actorAgent').addClass('displayNone');
+	appendAgent('actorAgent');
 	$('#actorObjectType').change({elementId: 'actor'},ObjectTypeChanged);
-	$('#actorAgentAdd').click({elementId: 'actor'},appendAgentOnEvent);
-	$('#actorAgentRemove').click({elementId: 'actor', propertyClass: 'agent', minimum:0},removeProperty);
+	$('#actorAgentAdd').click({elementId: 'actorAgent'},appendAgentOnEvent);
+	$('#actorAgentRemove').click({elementId: 'actorAgent', propertyClass: 'agent', minimum:1},removeProperty);
 
 	//Set up Verb
 	var languageMap = new Array();
 	languageMap[0] = "en-GB";
 	languageMap[1] = "en-US";
 	//Add 2 fields to start with
-	appendLanguageMap('verb','verbDisplay',2, languageMap);
-	$('#verbVerbDisplayAdd').click({elementId: 'verb', propertyClass: 'verbDisplay', languageMap: languageMap},appendLanguageMapOnEvent); 
-	$('#verbVerbDisplayRemove').click({elementId: 'verb', propertyClass: 'verbDisplay', minimum:0},removeProperty);
+	appendLanguageMap('verb','display',2, languageMap);
+	$('#verbDisplayAdd').click({elementId: 'verb', propertyClass: 'display', languageMap: languageMap},appendLanguageMapOnEvent); 
+	$('#verbDisplayRemove').click({elementId: 'verb', propertyClass: 'display', minimum:0},removeProperty);
 	
 	
 	//set up Object
 	$('#objectType').change({elementId: 'object'},ObjectTypeChanged);
 	//activity
-	appendLanguageMap('activity','activityName',2, languageMap);
-	$('#activityActivityNameAdd').click({elementId: 'activity', propertyClass: 'activityName', languageMap: languageMap},appendLanguageMapOnEvent); 
-	$('#activityActivityNameRemove').click({elementId: 'activity', propertyClass: 'activityName', minimum:0},removeProperty);
-	appendLanguageMap('activity','activityDescription',2, languageMap);
-	$('#activityActivityDescriptionAdd').click({elementId: 'activity', propertyClass: 'activityDescription', languageMap: languageMap},appendLanguageMapOnEvent); 
-	$('#activityActivityDescriptionRemove').click({elementId: 'activity', propertyClass: 'activityDescription', minimum:0},removeProperty);
+	appendLanguageMap('activity','name',2, languageMap);
+	$('#activityNameAdd').click({elementId: 'activity', propertyClass: 'name', languageMap: languageMap},appendLanguageMapOnEvent); 
+	$('#activityNameRemove').click({elementId: 'activity', propertyClass: 'name', minimum:0},removeProperty);
+	appendLanguageMap('activity','description',2, languageMap);
+	$('#activityDescriptionAdd').click({elementId: 'activity', propertyClass: 'description', languageMap: languageMap},appendLanguageMapOnEvent); 
+	$('#activityDescriptionRemove').click({elementId: 'activity', propertyClass: 'description', minimum:0},removeProperty);
 	
 	var extensionMap = new Array();
 	//appendLanguageMap('activity','activityExtension',2, extensionMap);
-	$('#activityActivityExtensionRemove').addClass('displayNone')
-	$('#activityActivityExtensionAdd').click({elementId: 'activity', propertyClass: 'activityExtension', languageMap: extensionMap},appendLanguageMapOnEvent); 
-	$('#activityActivityExtensionRemove').click({elementId: 'activity', propertyClass: 'activityExtension', minimum:0},removeProperty);
+	$('#activityExtensionRemove').addClass('displayNone')
+	$('#activityExtensionAdd').click({elementId: 'activity', propertyClass: 'extension', languageMap: extensionMap},appendLanguageMapOnEvent); 
+	$('#activityExtensionRemove').click({elementId: 'activity', propertyClass: 'extension', minimum:0},removeProperty);
 	
 	//Agent/Group
 	appendGroup('objectAgent').addClass('displayNone');
 	appendAgent('objectAgent');
 	$('#objectAgentAdd').click({elementId: 'objectAgent'},appendAgentOnEvent);
-	$('#objectAgentRemove').click({elementId: 'objectAgent', propertyClass: 'agent', minimum:0},removeProperty);
+	$('#objectAgentRemove').click({elementId: 'objectAgent', propertyClass: 'agent', minimum:1},removeProperty);
 
 
 
@@ -104,6 +104,9 @@ function ObjectTypeChanged (event)
 	//Hide all subsections (if they exist)
 	$('#' + elementId).find('.activitySubSection').addClass('displayNone');
 	$('#' + elementId).find('.agentSubSection').addClass('displayNone');
+	//hide Agent add/remove buttons (used for groups)
+	$('#' + elementId).find('.agentAdd').addClass('displayNone');
+	$('#' + elementId).find('.agentRemove').addClass('displayNone');
 	
 	switch($(this).val())
 	{
@@ -114,9 +117,6 @@ function ObjectTypeChanged (event)
 		$('#' + elementId).find('.group').addClass('displayNone');
 		//hide extra agents 
 		$('#' + elementId).find('.agent').slice(1).addClass('displayNone')
-		//hide add/remove buttons
-		$('#' + elementId + 'AgentAdd').addClass('displayNone');
-		$('#' + elementId + 'AgentRemove').addClass('displayNone');
 		//If all agents have been removed (in group mode) then add one. 
 		if ($('#' + elementId).find('.agent').length < 1)
 		{
@@ -132,10 +132,10 @@ function ObjectTypeChanged (event)
 		//reveal all agents
 		$('#' + elementId).find('.agent').removeClass('displayNone');
 		//reveal add/remove buttons
-		$('#' + elementId + 'AgentAdd').removeClass('displayNone');
-		if ($('#' + elementId).find('.agent').length > 0)
+		$('#' + elementId).find('.agentAdd').removeClass('displayNone');
+		if ($('#' + elementId).find('.agent').length > 1)
 		{
-			$('#' + elementId + 'AgentRemove').removeClass('displayNone');
+			$('#' + elementId).find('.agentRemove').removeClass('displayNone');
 		}
 	break;	
 	case 'Activity':
@@ -148,6 +148,7 @@ function ObjectTypeChanged (event)
 
 function appendLanguageMapOnEvent(event)
 {
+	
 	appendLanguageMap(event.data.elementId, event.data.propertyClass, event.data.loop, event.data.languageMap)
 }
 
@@ -165,10 +166,10 @@ function appendLanguageMap(elementId,propertyClass,loop,languageMap)
 		$('#' + elementId + capitalizedPropertyClass + 'ButtonHolder').before('\
 			<tr class="' + propertyClass + '">\
 				<td class="label">\
-					<input type="text" name="' + elementId + 'Key' + propertyCount + '" id="' + elementId + capitalizedPropertyClass + 'Key' + propertyCount + '" value="' + language + '" class="'+ propertyClass + 'Key" />\
+					<input type="text" name="' + elementId + capitalizedPropertyClass + 'Key' + propertyCount + '" id="' + elementId + capitalizedPropertyClass + 'Key' + propertyCount + '" value="' + language + '" class="'+ propertyClass + 'Key" />\
 				</td>\
 				<td>\
-					<input type="text" name="' + elementId + 'Value' + propertyCount + '" id="' + elementId + capitalizedPropertyClass + 'Value' + propertyCount + '" class="' + propertyClass + 'Value" />\
+					<input type="text" name="' + elementId + capitalizedPropertyClass + 'Value' + propertyCount + '" id="' + elementId + capitalizedPropertyClass + 'Value' + propertyCount + '" class="' + propertyClass + 'Value" />\
 				</td>\
 			</tr>\
 		');
@@ -185,11 +186,13 @@ function appendAgentOnEvent(event)
 
 function appendAgent(elementId)
 {
-	var propertyCount = $('#' + elementId).find('.agent').length;
+	var agentsOnlyCount =  $('#' + elementId).find('.agent').length;
+	var propertyCount = agentsOnlyCount + $('#' + elementId).find('.group').length;
+	
 	
 	var newAgent = $('\
 		<div class="agent">\
-				<h3>Agent ' + (propertyCount + 1) + '</h3>\
+				<h3>Agent ' + (agentsOnlyCount + 1) + '</h3>\
 				<table>\
 					<tr>\
 						<td class="label">Name:</td>\
@@ -197,73 +200,56 @@ function appendAgent(elementId)
 						<input type="text" name="' + elementId + 'Name' + propertyCount + '" id="' + elementId + 'Name' + propertyCount + '" class="name"/>\
 						</td>\
 					</tr>\
-					<tr class="groupHideable">\
-						<td class="label">mbox:</td>\
+					<tr>\
+						<td class="label">\
+							<select name="' + elementId + 'FunctionalIdentifierType' + propertyCount + '" id="' + elementId + 'FunctionalIdentifierType' + propertyCount + '" class="functionalIdentifierType">\
+								<option value="mbox" selected="selected">mbox</option>\
+								<option value="mbox_sha1sum">mbox_sha1sum</option>\
+								<option value="openid">openid</option>\
+								<option value="account">account</option>\
+							</select>\
+						</td>\
 						<td>\
-						<input type="text" name="' + elementId + 'Mbox' + propertyCount + '" id="' + elementId + 'Mbox' + propertyCount + '" class="mbox"/>\
+							<input type="text" name="' + elementId + 'FunctionalIdentifier' + propertyCount + '" id="' + elementId + 'FunctionalIdentifier' + propertyCount + '" class="functionalIdentifier"/>\
 						</td>\
 					</tr>\
-					<tr class="agentHideableShowButton">\
-						<td colspan="2" class="buttonHolder">\
-						<input type="button" value="More..." name="' + elementId + 'Show' + propertyCount + '" id="' + elementId + 'Show' + propertyCount + '" class="button" />\
-						</td>\
-					</tr>\
-					<tr class="agentHideable displayNone">\
-						<td class="label">Mbox_sha1sum:</td>\
-						<td>\
-						<input type="text" name="' + elementId + 'Mbox_sha1sum' + propertyCount + '" id="' + elementId + 'Mbox_sha1sum' + propertyCount + '" class="mbox_sha1sum"/>\
-						</td>\
-					</tr>\
-					<tr class="agentHideable displayNone">\
-						<td class="label">openid:</td>\
-						<td>\
-						<input type="text" name="' + elementId + 'Openid' + propertyCount + '" id="' + elementId + 'Openid' + propertyCount + '" class="openid"/>\
-						</td>\
-					</tr>\
-					<tr class="agentHideable displayNone">\
-						<td class="label label_heading">account:</td>\
-					</tr>\
-					<tr class="agentHideable displayNone">\
+					<tr class="agentAccount displayNone">\
 						<td class="label">homePage:</td>\
 						<td>\
 						<input type="text" name="' + elementId + 'AccountHomePage' + propertyCount + '" id="' + elementId + 'AccountHomePage' + propertyCount + '" class="accountHomePage"/>\
 						</td>\
 					</tr>\
-					<tr class="agentHideable displayNone">\
+					<tr class="agentAccount displayNone">\
 						<td class="label">name:</td>\
 						<td>\
 						<input type="text" name="' + elementId + 'AccountName' + propertyCount + '" id="' + elementId + 'AccountName' + propertyCount + '" class="accountName"/>\
-						</td>\
-					</tr>\
-					</tr>\
-					<tr class="agentHideableHideButton displayNone">\
-						<td colspan="2" class="buttonHolder">\
-						<input type="button" value="Hide" name="' + elementId + 'Hide' + propertyCount + '" id="' + elementId + 'Hide' + propertyCount + '" class="button"/>\
 						</td>\
 					</tr>\
 				</table>\
 			</div>\
 	').appendTo('#' + elementId);
 	
-	//enable show button
-	$('#' + elementId + 'Show' + propertyCount).click(function(){
-		$(this).closest('table').find('.agentHideable, .agentHideableHideButton').removeClass('displayNone');
-		$(this).closest('tr').addClass('displayNone');
+	$('#' + elementId + 'FunctionalIdentifierType' + propertyCount).change(function(){
+		if ($(this).val() == 'account')
+		{
+			$(this).closest('table').find('.agentAccount').removeClass('displayNone');
+			$('#' + elementId + 'FunctionalIdentifier' + propertyCount).addClass('displayNone');
+		}
+		else
+		{
+			$(this).closest('table').find('.agentAccount').addClass('displayNone');
+			$('#' + elementId + 'FunctionalIdentifier' + propertyCount).removeClass('displayNone');
+		}
 	});
 	
-	//enable hide button
-	$('#' + elementId + 'Hide' + propertyCount).click(function(){
-		$(this).closest('table').find('.agentHideable').addClass('displayNone');
-		$(this).closest('table').find('.agentHideableShowButton').removeClass('displayNone');
-		$(this).closest('tr').addClass('displayNone');
-	});
 	
-	
-	//If this is a group, ensure the removeAgent button is visible as groups can have 0 agents
-	if ($('#'+elementId + 'ObjectType').val() == 'Group')
+	//If this is a group, ensure the removeAgent button is visible if there are more than 1 agent
+	if (($('#'+elementId).parent().find('.objectType').val() == 'Group') && (agentsOnlyCount > 0))
 	{
-		$('#' + elementId  + 'AgentRemove').removeClass('displayNone');
+		$('#' + elementId  + 'Remove').removeClass('displayNone');
 	}
+
+	
 	
 	return newAgent;
 }
@@ -277,14 +263,6 @@ function appendGroup(elementId)
 	Group.removeClass('agent').addClass('group');
 	//change its heading
 	Group.find('h3').text('Group Details');
-	//add to the hidden fields
-	Group.find('.groupHideable').addClass('agentHideable displayNone');
-	//Move the "show" button up one
-	var rowToMove = Group.find('.agentHideableShowButton')
-	rowToMove.prev().insertAfter(rowToMove);
-	//change the ids of the show/hide buttons
-	$('#' + elementId + 'Show' + GroupIndex).attr('id',elementId + 'ShowGroup'+ GroupIndex).attr('name',elementId + 'ShowGroup'+ GroupIndex);
-	$('#' + elementId + 'Hide' + GroupIndex).attr('id',elementId + 'HideGroup'+ GroupIndex).attr('name',elementId + 'HideGroup'+ GroupIndex);
 	return Group;
 }
 
@@ -333,7 +311,6 @@ function removeProperty(event)
 	//get paremters
 	var elementId = event.data.elementId;
 	var propertyClass = event.data.propertyClass;
-	var capitalizedPropertyClass = capitaliseFirstLetter(propertyClass);
 	
 	//get and count elements
 	var propertyArray = $('#' + elementId).find('.' + propertyClass),
@@ -342,7 +319,7 @@ function removeProperty(event)
 	//Hide the '-' button if this function will reduce us to the minimum
 	if (propertyCount < (event.data.minimum + 2))
 	{
-		$('#' + elementId  + capitalizedPropertyClass + 'Remove').addClass('displayNone');
+		$('#' + elementId).parent().find('.' +  propertyClass + 'Remove').addClass('displayNone');
 	}
 	
 	//start at the top and loop through LRSes
@@ -468,38 +445,53 @@ function statementGeneratorSendStatement()
 	});
 	
 	
-	//actor
+	//actor - TODO: factor this better
 	switch($('#actorObjectType').val())
 	{
 		case 'Agent':
-			var myActor = new TinCan.Agent({
+			var myActor;
+			if ($('#actor').find('.functionalIdentifierType') == 'account')
+			{
+				myActor= new TinCan.Agent({
 				name : $('#actor').find('.agent:first').find('.name').val(),
-				mbox : $('#actor').find('.agent:first').find('.mbox').val(),
-				mbox_sha1sum:$('#actor').find('.agent:first').find('.mbox_sha1sum').val(),
-				openid:$('#actor').find('.agent:first').find('.openid').val(),
 				account: {
 					name:$('#actor').find('.agent:first').find('.accountHomePage').val(),
 					homePage:$('#actor').find('.agent:first').find('.accountName').val()
-				}
-			});
-			/*if ((myActor.account.name == "") && (myActor.account.homePage == ""))
+					}
+				});
+			}
+			else
 			{
-				delete myActor.account;
-			}*/
+				myActor= new TinCan.Agent({
+				name : $('#actor').find('.agent:first').find('.name').val()
+				//$('#actor').find('.agent:first').find('.functionalIdentifierType').val() : $('#actor').find('.agent:first').find('.functionalIdentifier').val()
+				});
+				myActor[$('#actor').find('.agent:first').find('.functionalIdentifierType').val()] = $('#actor').find('.agent:first').find('.functionalIdentifier').val();
+			}
+						
 			myActor.account = deleteEmptyProperties(myActor.account);
 			myTinCan.actor = deleteEmptyProperties(myActor);
 		break;
 		case 'Group':
-			var myActor = new TinCan.Group({
+			var myActor;
+			if ($('#actor').find('.functionalIdentifierType') == 'account')
+			{
+				myActor= new TinCan.Group({
 				name : $('#actor').find('.group:first').find('.name').val(),
-				mbox : $('#actor').find('.group:first').find('.mbox').val(),
-				mbox_sha1sum:$('#actor').find('.group:first').find('.mbox_sha1sum').val(),
-				openid:$('#actor').find('.group:first').find('.openid').val(),
 				account: {
 					name:$('#actor').find('.group:first').find('.accountHomePage').val(),
 					homePage:$('#actor').find('.group:first').find('.accountName').val()
-				}
-			});
+					}
+				});
+			}
+			else
+			{
+				myActor= new TinCan.Group({
+				name : $('#actor').find('.group:first').find('.name').val()
+				//$('#actor').find('.group:first').find('.functionalIdentifierType').val() : $('#actor').find('.group:first').find('.functionalIdentifier').val()
+				});
+				myActor[$('#actor').find('.group:first').find('.functionalIdentifierType').val()] = $('#actor').find('.group:first').find('.functionalIdentifier').val();
+			}
 			 $('#actor').find('.agent').each(function(index){
 			 	var agentToAddToGroup = new TinCan.Agent({
 				name : $(this).find('.name').val(),
@@ -511,6 +503,24 @@ function statementGeneratorSendStatement()
 					homePage: $(this).find('.accountName').val()
 					}
 				});
+				if ($(this).find('.functionalIdentifierType') == 'account')
+				{
+					myActor= new TinCan.Agent({
+					name : $(this).find('.name').val(),
+					account: {
+						name:$(this).find('.accountHomePage').val(),
+						homePage:$(this).find('.accountName').val()
+						}
+					});
+				}
+				else
+				{
+					myActor= new TinCan.Agent({
+					name : $(this).find('.name').val()
+					//$(this).find('.functionalIdentifierType').val() :$(this).find('.functionalIdentifier').val()
+					});
+					myActor[$(this).find('.functionalIdentifierType').val()] = $(this).find('.functionalIdentifier').val();
+				}
 
 				myActor.member[index] = deleteEmptyProperties(agentToAddToGroup);
 			 });
@@ -521,8 +531,8 @@ function statementGeneratorSendStatement()
 
 	//verb
 	var myVerbDisplay = new Object();
-	$('#verb').find('.verbDisplay').each(function(index) {
-	   myVerbDisplay[$(this).find('.verbDisplayKey').val()] = $(this).find('.verbDisplayValue').val()
+	$('#verb').find('.display').each(function(index) {
+	   myVerbDisplay[$(this).find('.displayKey').val()] = $(this).find('.displayValue').val()
 	 });
 	 myVerbDisplay = deleteEmptyProperties(myVerbDisplay);
 	var myVerb = new TinCan.Verb({
@@ -536,16 +546,16 @@ function statementGeneratorSendStatement()
 	
 	//Create the activity definition
 	var myActivityDefinitionName = new Object();
-	 $('#activity').find('.activityName').each(function(index) {
-	   myActivityDefinitionName[$(this).find('.activityNameKey').val()] = $(this).find('.activityNameValue').val()
+	 $('#activity').find('.name').each(function(index) {
+	   myActivityDefinitionName[$(this).find('.nameKey').val()] = $(this).find('.nameValue').val()
 	 });
 	 var myActivityDefinitionDescription = new Object();
-	 $('#activity').find('.activityDescription').each(function(index) {
-	   myActivityDefinitionDescription[$(this).find('.activityDescriptionKey').val()] = $(this).find('.activityDescriptionValue').val()
+	 $('#activity').find('.description').each(function(index) {
+	   myActivityDefinitionDescription[$(this).find('.descriptionKey').val()] = $(this).find('.descriptionValue').val()
 	 });
 	 var myActivityDefinitionExtensions = new Object();
-	  $('#activity').find('.activityExtension').each(function(index) {
-	   myActivityDefinitionExtensions[$(this).find('.activityExtensionKey').val()] = $(this).find('.activityExtensionValue').val()
+	  $('#activity').find('.extension').each(function(index) {
+	   myActivityDefinitionExtensions[$(this).find('.extensionKey').val()] = $(this).find('.extensionValue').val()
 	 });
 	 
 	 var myActivityDefinition = new TinCan.ActivityDefinition({
