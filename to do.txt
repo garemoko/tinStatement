@@ -1,5 +1,0 @@
-to do
-====
-
-groups must contain at least 1 actor
-agents must have EXACTLY one inverse functional identifier, groups must have 0 or 1.
