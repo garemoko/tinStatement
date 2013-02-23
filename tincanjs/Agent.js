@@ -107,69 +107,88 @@ TinCan client library
 
             // handle .9 split names and array properties into single interface
             if (typeof cfg.lastName !== "undefined" || typeof cfg.firstName !== "undefined") {
-                if (cfg.lastName.length > 1 || cfg.firstName.length > 1) {
-                    this.degraded = true;
+                cfg.name = "";
+                if (typeof cfg.firstName !== "undefined" && cfg.firstName.length > 0) {
+                    cfg.name = cfg.firstName[0];
+                    if (cfg.firstName.length > 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.firstName[0];
                 if (cfg.name !== "") {
                     cfg.name += " ";
                 }
-                cfg.name += cfg.lastName[0];
+
+                if (typeof cfg.lastName !== "undefined" && cfg.lastName.length > 0) {
+                    cfg.name += cfg.lastName[0];
+                    if (cfg.lastName.length > 1) {
+                        this.degraded = true;
+                    }
+                }
             } else if (typeof cfg.familyName !== "undefined" || typeof cfg.givenName !== "undefined") {
-                if (cfg.familyName.length > 1 || cfg.givenName.length > 1) {
-                    this.degraded = true;
+                cfg.name = "";
+                if (typeof cfg.givenName !== "undefined" && cfg.givenName.length > 0) {
+                    cfg.name = cfg.givenName[0];
+                    if (cfg.givenName.length > 1) {
+                        this.degraded = true;
+                    }
                 }
 
-                cfg.name = cfg.givenName[0];
                 if (cfg.name !== "") {
                     cfg.name += " ";
                 }
-                cfg.name += cfg.familyName[0];
+
+                if (typeof cfg.familyName !== "undefined" && cfg.familyName.length > 0) {
+                    cfg.name += cfg.familyName[0];
+                    if (cfg.familyName.length > 1) {
+                        this.degraded = true;
+                    }
+                }
             }
 
-            if (typeof cfg.name === "object") {
+            if (typeof cfg.name === "object" && cfg.name !== null) {
                 if (cfg.name.length > 1) {
                     this.degraded = true;
                 }
                 cfg.name = cfg.name[0];
             }
-            if (typeof cfg.mbox === "object") {
+            if (typeof cfg.mbox === "object" && cfg.mbox !== null) {
                 if (cfg.mbox.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox = cfg.mbox[0];
             }
-           if (cfg.mbox_sha1sum && (typeof cfg.mbox_sha1sum === "object")) {
+            if (typeof cfg.mbox_sha1sum === "object" && cfg.mbox_sha1sum !== null) {
                 if (cfg.mbox_sha1sum.length > 1) {
                     this.degraded = true;
                 }
                 cfg.mbox_sha1sum = cfg.mbox_sha1sum[0];
             }
-            if (cfg.openid && (typeof cfg.openid === "object")) {
+            if (typeof cfg.openid === "object" && cfg.openid !== null) {
                 if (cfg.openid.length > 1) {
                     this.degraded = true;
                 }
                 cfg.openid = cfg.openid[0];
             }
-            if (cfg.account)
-            {
-		        if (cfg.account.homePage && (typeof cfg.account === "object" && typeof cfg.account.homePage === "undefined") ){
-		            if (cfg.account.length === 0) {
-		                delete cfg.account;
-		            }
-		            else {
-		                if (cfg.account.length > 1) {
-		                    this.degraded = true;
-		                }
-		                cfg.account = cfg.account[0];
-		            }
-		        }
+            if (typeof cfg.account === "object" && cfg.account !== null && typeof cfg.account.homePage === "undefined") {
+                if (cfg.account.length === 0) {
+                    delete cfg.account;
+                }
+                else {
+                    if (cfg.account.length > 1) {
+                        this.degraded = true;
+                    }
+                    cfg.account = cfg.account[0];
+                }
             }
 
             if (cfg.hasOwnProperty("account")) {
-                // TODO: check to see if already this type
-                this.account = new TinCan.AgentAccount (cfg.account);
+                if (cfg.account instanceof TinCan.AgentAccount) {
+                    this.account = cfg.account;
+                }
+                else {
+                    this.account = new TinCan.AgentAccount (cfg.account);
+                }
             }
 
             for (i = 0; i < directProps.length; i += 1) {
@@ -212,7 +231,7 @@ TinCan client library
 
             version = version || TinCan.versions()[0];
 
-            if (version === "0.90") {
+            if (version === "0.9") {
                 if (this.mbox !== null) {
                     result.mbox = [
                         this.mbox
@@ -229,6 +248,9 @@ TinCan client library
                 }
                 if (this.name !== null) {
                     result.name = this.name;
+                }
+                if (this.account !== null) {
+                    result.account = this.account;
                 }
             }
 

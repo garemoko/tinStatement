@@ -331,11 +331,17 @@ function bubbleInputValuesUp(objectArray)
 //removes any empty properties 
 function deleteEmptyProperties(objectToTest)
 {
-	for (i in objectToTest) {
- 		if (objectToTest[i] == null || objectToTest[i] == "" || (JSON.stringify(objectToTest[i])=="{}")) {
-    		delete objectToTest[i];
-  		}
-	}
+
+    if (typeof objectToTest=="object"){
+        for (i in objectToTest) {
+            if (objectToTest[i] == null || objectToTest[i] == "" || (JSON.stringify(objectToTest[i])=="{}")) {
+                delete objectToTest[i];
+            }
+            else {
+                deleteEmptyProperties(objectToTest[i]);
+            }
+        }
+    }
 	return objectToTest;
 }
 

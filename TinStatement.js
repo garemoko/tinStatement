@@ -15,10 +15,6 @@ GNU General Public License for more details.
 */
 
 
-
-
-
-
 /*============DOCUMENT READY==============*/
 $(function(){
 	
@@ -75,6 +71,21 @@ $(function(){
 
 	//send statement
 	$('#sendStatement').click(statementGeneratorSendStatement);
+	
+	//Set debug defaults
+	var setDebugDefaults = false;
+	
+	if (setDebugDefaults){
+		$('#endpoint0').val('https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/');
+		$('#basicLogin0').val('Login');
+		$('#basicPass0').val('Pass');
+		$('#actorAgentName1').val('Andrew Downes');
+		$('#actorAgentFunctionalIdentifier1').val('mrdownes@hotmail.com');
+		$('#verbId').val('http://www.example.com/verb');
+		$('#verbDisplayValue0').val('example action');
+		$('#verbDisplayValue1').val('example action');
+	}
+	
 });
 /*============END DOCUMENT READY==============*/
 
@@ -86,7 +97,7 @@ function statementGeneratorSendStatement()
 	//Create an instance of the Tin Can Library
 	var myTinCan = new TinCan();
 	
-	myTinCan.enableDebug = 1;
+	myTinCan.DEBUG = 1;
 	
 	//LRS
 	$('#lrs').find('.lrs').each(function(index){
@@ -118,13 +129,12 @@ function statementGeneratorSendStatement()
 			{
 				myActor= new TinCan.Agent({
 				name : $('#actor').find('.agent:first').find('.name').val()
-				//$('#actor').find('.agent:first').find('.functionalIdentifierType').val() : $('#actor').find('.agent:first').find('.functionalIdentifier').val()
 				});
 				myActor[$('#actor').find('.agent:first').find('.functionalIdentifierType').val()] = $('#actor').find('.agent:first').find('.functionalIdentifier').val();
+				myActor.objectType = "Agent";
 			}
 						
-			myActor.account = deleteEmptyProperties(myActor.account);
-			myTinCan.actor = deleteEmptyProperties(myActor);
+			myTinCan.actor = myActor;
 		break;
 		case 'Group':
 			var myActor;
@@ -162,8 +172,8 @@ function statementGeneratorSendStatement()
 					myActor= new TinCan.Agent({
 					name : $(this).find('.name').val(),
 					account: {
-						name:$(this).find('.accountHomePage').val(),
-						homePage:$(this).find('.accountName').val()
+						name:$(this).find('.accountName').val(),
+						homePage:$(this).find('.accountHomePage').val()
 						}
 					});
 				}
@@ -176,7 +186,7 @@ function statementGeneratorSendStatement()
 					myActor[$(this).find('.functionalIdentifierType').val()] = $(this).find('.functionalIdentifier').val();
 				}
 
-				myActor.member[index] = deleteEmptyProperties(agentToAddToGroup);
+				myActor.member[index] = agentToAddToGroup;
 			 });
 		break;
 	}
@@ -195,48 +205,75 @@ function statementGeneratorSendStatement()
 	});
 	 
 	
+	//Object
 	//TODO: ADD OTHER OBJECT TYPES
-	//activity
+	var myTarget;
 	
-	//Create the activity definition
-	var myActivityDefinitionName = new Object();
-	 $('#activity').find('.name').each(function(index) {
-	   myActivityDefinitionName[$(this).find('.nameKey').val()] = $(this).find('.nameValue').val()
-	 });
-	 var myActivityDefinitionDescription = new Object();
-	 $('#activity').find('.description').each(function(index) {
-	   myActivityDefinitionDescription[$(this).find('.descriptionKey').val()] = $(this).find('.descriptionValue').val()
-	 });
-	 var myActivityDefinitionExtensions = new Object();
-	  $('#activity').find('.extension').each(function(index) {
-	   myActivityDefinitionExtensions[$(this).find('.extensionKey').val()] = $(this).find('.extensionValue').val()
-	 });
-	 
-	 var myActivityDefinition = new TinCan.ActivityDefinition({
-		type : $('#activity').find('.activityType').val(),
-		name:  deleteEmptyProperties(myActivityDefinitionName),
-		description:  deleteEmptyProperties(myActivityDefinitionDescription),
-		extensions:  deleteEmptyProperties(myActivityDefinitionExtensions)
-	});
+	switch ($('#objectType').val())
+	{
+		case "Activity":
+			//activity
+			//Create the activity definition
+			var myActivityDefinitionName = new Object();
+			 $('#activity').find('.name').each(function(index) {
+			   myActivityDefinitionName[$(this).find('.nameKey').val()] = $(this).find('.nameValue').val()
+			 });
+			 var myActivityDefinitionDescription = new Object();
+			 $('#activity').find('.description').each(function(index) {
+			   myActivityDefinitionDescription[$(this).find('.descriptionKey').val()] = $(this).find('.descriptionValue').val()
+			 });
+			 var myActivityDefinitionExtensions = new Object();
+			  $('#activity').find('.extension').each(function(index) {
+			   myActivityDefinitionExtensions[$(this).find('.extensionKey').val()] = $(this).find('.extensionValue').val()
+			 });
+			 
+			 var myActivityDefinition = new TinCan.ActivityDefinition({
+				type : $('#activity').find('.activityType').val(),
+				name:  myActivityDefinitionName,
+				description:  myActivityDefinitionDescription,
+				extensions:  myActivityDefinitionExtensions
+			});
+			
+			//Create the activity
+			var myActivity = new TinCan.Activity({
+				id : $('#activity').find('.activityId').val(),
+				definition : myActivityDefinition
+			});
+			
+			myTarget = myActivity;
+		break;
+		case "Agent":
+			var myObjectAgent;
+			if ($('#objectAgent').find('.functionalIdentifierType') == 'account')
+			{
+				myActor= new TinCan.Agent({
+				name : $('#objectAgent').find('.agent:first').find('.name').val(),
+				account: {
+					name:$('#objectAgent').find('.agent:first').find('.accountHomePage').val(),
+					homePage:$('#objectAgent').find('.agent:first').find('.accountName').val()
+					}
+				});
+			}
+			else
+			{
+				myObjectAgent= new TinCan.Agent({
+				name : $('#objectAgent').find('.agent:first').find('.name').val()
+				});
+				myObjectAgent[$('#objectAgent').find('.agent:first').find('.functionalIdentifierType').val()] = $('#objectAgent').find('.agent:first').find('.functionalIdentifier').val();
+				myObjectAgent.objectType = "Agent";
+			}
+						
+			myTarget = myObjectAgent;
+		break;
+		
+	}
 	
-	myActivityDefinition = deleteEmptyProperties(myActivityDefinition);
-	
-	//Create the activity
-	var myActivity = new TinCan.Activity({
-		id : $('#activity').find('.activityId').val(),
-		definition : myActivityDefinition
-	});
-	
-	
-	
-	//create the statement
 	var stmt = new TinCan.Statement({
 		actor : deleteEmptyProperties(myActor),
 		verb : deleteEmptyProperties(myVerb),
-		target : deleteEmptyProperties(myActivity)
+		target : deleteEmptyProperties(myTarget)
 	},true);
 	
-
 	myTinCan.sendStatement(stmt, function() {});
 }
 

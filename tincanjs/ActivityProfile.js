@@ -18,16 +18,16 @@
 TinCan client library
 
 @module TinCan
-@submodule TinCan.InteractionComponent
+@submodule TinCan.ActivityProfile
 **/
 (function () {
     "use strict";
 
     /**
-    @class TinCan.InteractionComponent
+    @class TinCan.ActivityProfile
     @constructor
     */
-    var InteractionComponent = TinCan.InteractionComponent = function (cfg) {
+    var ActivityProfile = TinCan.ActivityProfile = function (cfg) {
         this.log("constructor");
 
         /**
@@ -37,18 +37,39 @@ TinCan client library
         this.id = null;
 
         /**
-        @property description
-        @type Object
+        @property activity
+        @type TinCan.Activity
         */
-        this.description = null;
+        this.activity = null;
+
+        /**
+        @property updated
+        @type String
+        */
+        this.updated = null;
+
+        /**
+        @property contents
+        @type String
+        */
+        this.contents = null;
+
+        /**
+        SHA1 of contents as provided by the server during last fetch,
+        this should be passed through to saveActivityProfile
+
+        @property etag
+        @type String
+        */
+        this.etag = null;
 
         this.init(cfg);
     };
-    InteractionComponent.prototype = {
+    ActivityProfile.prototype = {
         /**
         @property LOG_SRC
         */
-        LOG_SRC: 'InteractionComponent',
+        LOG_SRC: 'ActivityProfile',
 
         /**
         @method log
@@ -64,52 +85,42 @@ TinCan client library
             var i,
                 directProps = [
                     "id",
-                    "description"
-                ]
+                    "contents",
+                    "etag"
+                ],
+                val
             ;
 
             cfg = cfg || {};
+
+            if (cfg.hasOwnProperty("activity")) {
+                if (cfg.activity instanceof TinCan.Activity) {
+                    this.activity = cfg.activity;
+                }
+                else {
+                    this.activity = new TinCan.Activity (cfg.activity);
+                }
+            }
 
             for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
                     this[directProps[i]] = cfg[directProps[i]];
                 }
             }
-        },
 
-        /**
-        @method asVersion
-        @param {Object} [options]
-        @param {String} [options.version] Version to return (defaults to newest supported)
-        */
-        asVersion: function (version) {
-            this.log("asVersion");
-            var result = {
-                    id: this.id
-                },
-                optionalDirectProps = [
-                    "description"
-                ],
-                i,
-                prop;
+            this.updated = false;
+        }
+    };
 
-            version = version || TinCan.versions()[0];
+    /**
+    @method fromJSON
+    @return {Object} ActivityProfile
+    @static
+    */
+    ActivityProfile.fromJSON = function (stateJSON) {
+        ActivityProfile.prototype.log("fromJSON");
+        var _state = JSON.parse(stateJSON);
 
-            for (i = 0; i < optionalDirectProps.length; i += 1) {
-                prop = optionalDirectProps[i];
-                if (this[prop] !== null) {
-                    result[prop] = this[prop];
-                }
-            }
-
-            return result;
-        },
-
-        /**
-        See {{#crossLink "TinCan.Utils/getLangDictionaryValue"}}{{/crossLink}}
-
-        @method getLangDictionaryValue
-        */
-        getLangDictionaryValue: TinCan.Utils.getLangDictionaryValue
+        return new ActivityProfile(_state);
     };
 }());
