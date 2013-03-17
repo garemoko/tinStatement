@@ -73,17 +73,17 @@ $(function(){
 	$('#sendStatement').click(statementGeneratorSendStatement);
 	
 	//Set debug defaults
-	var setDebugDefaults = false;
+	var setDebugDefaults = true;
 	
 	if (setDebugDefaults){
-		$('#endpoint0').val('https://cloud.scorm.com/ScormEngineInterface/TCAPI/public/');
-		$('#basicLogin0').val('Login');
-		$('#basicPass0').val('Pass');
+		$('#endpoint0').val('https://mrandrewdownes.waxlrs.com/TCAPI/');
+		$('#basicLogin0').val('gddikCN6KrbdWZaXq36T');
+		$('#basicPass0').val('b7Q21MPlattwRn964bVW');
 		$('#actorAgentName1').val('Andrew Downes');
 		$('#actorAgentFunctionalIdentifier1').val('mrdownes@hotmail.com');
-		$('#verbId').val('http://www.example.com/verb');
-		$('#verbDisplayValue0').val('example action');
-		$('#verbDisplayValue1').val('example action');
+		$('#verbId').val('http://tincanapi.co.uk/tinrepo/verbs/make_moderator');
+		$('#verbDisplayValue0').val('make moderator');
+		$('#verbDisplayValue1').val('make moderator');
 	}
 	
 });
@@ -115,7 +115,7 @@ function statementGeneratorSendStatement()
 	{
 		case 'Agent':
 			var myActor;
-			if ($('#actor').find('.functionalIdentifierType') == 'account')
+			if ($('#actor').find('.agent:first').find('.functionalIdentifierType') == 'account')
 			{
 				myActor= new TinCan.Agent({
 				name : $('#actor').find('.agent:first').find('.name').val(),
@@ -138,7 +138,7 @@ function statementGeneratorSendStatement()
 		break;
 		case 'Group':
 			var myActor;
-			if ($('#actor').find('.functionalIdentifierType') == 'account')
+			if ($('#actor').find('.group:first').find('.functionalIdentifierType') == 'account')
 			{
 				myActor= new TinCan.Group({
 				name : $('#actor').find('.group:first').find('.name').val(),
@@ -244,18 +244,23 @@ function statementGeneratorSendStatement()
 		break;
 		case "Agent":
 			var myObjectAgent;
-			if ($('#objectAgent').find('.functionalIdentifierType') == 'account')
+			if ($('#objectAgent').find('.agent:first').find('.functionalIdentifierType').val() == 'account')
 			{
-				myActor= new TinCan.Agent({
+				console.log('account');
+				myObjectAgent= new TinCan.Agent({
 				name : $('#objectAgent').find('.agent:first').find('.name').val(),
+				objectType : "Agent",
 				account: {
 					name:$('#objectAgent').find('.agent:first').find('.accountHomePage').val(),
 					homePage:$('#objectAgent').find('.agent:first').find('.accountName').val()
 					}
 				});
+				
+				console.log ('myActor: ' + JSON.stringify(myActor));
 			}
 			else
 			{
+				console.log($('#objectAgent').find('.functionalIdentifierType').val());
 				myObjectAgent= new TinCan.Agent({
 				name : $('#objectAgent').find('.agent:first').find('.name').val()
 				});
@@ -268,11 +273,15 @@ function statementGeneratorSendStatement()
 		
 	}
 	
+	console.log ('myActor: ' + JSON.stringify(myActor));
+	console.log ('target: ' + JSON.stringify(deleteEmptyProperties(myTarget)));
 	var stmt = new TinCan.Statement({
 		actor : deleteEmptyProperties(myActor),
 		verb : deleteEmptyProperties(myVerb),
 		target : deleteEmptyProperties(myTarget)
 	},true);
+	
+	console.log ('sending: ' + JSON.stringify(stmt));
 	
 	myTinCan.sendStatement(stmt, function() {});
 }

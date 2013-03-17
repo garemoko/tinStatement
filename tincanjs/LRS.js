@@ -22,7 +22,8 @@ TinCan client library
 **/
 (function () {
     "use strict";
-    var IE = "ie",
+    var XDR = "xdr",
+        NATIVE = "native",
 
     /**
     @class TinCan.LRS
@@ -75,7 +76,7 @@ TinCan client library
         @default "native"
         @private
         */
-        this._requestMode = "native";
+        this._requestMode = NATIVE;
 
         this.init(cfg);
     };
@@ -124,6 +125,9 @@ TinCan client library
             if (cfg.hasOwnProperty("auth")) {
                 this.auth = cfg.auth;
             }
+            else if (cfg.hasOwnProperty("username") && cfg.hasOwnProperty("password")) {
+                this.auth = "Basic " + TinCan.Utils.getBase64String(cfg.username + ":" + cfg.password);
+            }
 
             if (cfg.hasOwnProperty("extended")) {
                 this.extended = cfg.extended;
@@ -134,8 +138,10 @@ TinCan client library
             if (env.isBrowser) {
                 //
                 // determine whether this is a cross domain request,
-                // if it is then if we are in IE check that the schemes
-                // match to see if we should be able to talk to the LRS
+                // whether our browser has CORS support at all, and then
+                // if it does then if we are in IE with XDR only check that
+                // the schemes match to see if we should be able to talk to
+                // the LRS
                 //
                 schemeMatches = location.protocol.toLowerCase() === urlParts[1];
                 isXD = (
@@ -150,23 +156,41 @@ TinCan client library
                         urlParts[3] !== null ? urlParts[3] : (urlParts[1] === "http:" ? "80" : "443")
                     )
                 );
-                if (isXD && env.isIE) {
-                    if (schemeMatches) {
-                        this._requestMode = IE;
+                if (isXD) {
+                    if (env.hasCORS) {
+                        if (env.useXDR && schemeMatches) {
+                            this._requestMode = XDR;
+                        }
+                        else if (env.useXDR && ! schemeMatches) {
+                            if (cfg.allowFail) {
+                                if (this.alertOnRequestFailure) {
+                                    alert("[warning] LRS invalid: cross domain request for differing scheme in IE with XDR");
+                                }
+                            }
+                            else {
+                                if (this.alertOnRequestFailure) {
+                                    alert("[error] LRS invalid: cross domain request for differing scheme in IE with XDR");
+                                }
+                                throw {
+                                    code: 2,
+                                    mesg: "LRS invalid: cross domain request for differing scheme in IE with XDR"
+                                };
+                            }
+                        }
                     }
                     else {
                         if (cfg.allowFail) {
                             if (this.alertOnRequestFailure) {
-                                alert("[warning] LRS invalid: cross domain request for differing scheme in IE");
+                                alert("[warning] LRS invalid: cross domain requests not supported in this browser");
                             }
                         }
                         else {
                             if (this.alertOnRequestFailure) {
-                                alert("[error] LRS invalid: cross domain request for differing scheme in IE");
+                                alert("[error] LRS invalid: cross domain requests not supported in this browser");
                             }
                             throw {
                                 code: 2,
-                                mesg: "LRS invalid: cross domain request for differing scheme in IE"
+                                mesg: "LRS invalid: cross domain requests not supported in this browser"
                             };
                         }
                     }
@@ -255,7 +279,7 @@ TinCan client library
                 }
             }
 
-            if (this._requestMode === "native") {
+            if (this._requestMode === NATIVE) {
                 this.log("sendRequest using XMLHttpRequest");
 
                 for (prop in cfg.params) {
@@ -266,6 +290,8 @@ TinCan client library
                 if (pairs.length > 0) {
                     fullUrl += "?" + pairs.join("&");
                 }
+
+                this.log("sendRequest using XMLHttpRequest - async: " + (typeof cfg.callback !== "undefined"));
 
                 xhr = new XMLHttpRequest();
                 xhr.open(cfg.method, fullUrl, (typeof cfg.callback !== "undefined"));
@@ -280,7 +306,7 @@ TinCan client library
                 }
                 data = cfg.data;
             }
-            else if (this._requestMode === IE) {
+            else if (this._requestMode === XDR) {
                 this.log("sendRequest using XDomainRequest");
 
                 // method has to go on querystring, and nothing else,
@@ -382,7 +408,7 @@ TinCan client library
 
             if (! cfg.callback) {
                 // synchronous
-                if (this._requestMode === IE) {
+                if (this._requestMode === XDR) {
                     // synchronous call in IE, with no synchronous mode available
                     until = 1000 + Date.now();
                     this.log("sendRequest - until: " + until + ", finished: " + finished);
@@ -425,6 +451,9 @@ TinCan client library
                 return;
             }
 
+            cfg = cfg || {};
+
+            // TODO: should this check that stmt.id is not null?
             requestCfg = {
                 url: "statements",
                 method: "PUT",
@@ -462,6 +491,8 @@ TinCan client library
                 this.log("error: environment not implemented");
                 return;
             }
+
+            cfg = cfg || {};
 
             requestCfg = {
                 url: "statements",
@@ -505,8 +536,8 @@ TinCan client library
         */
         saveStatements: function (stmts, cfg) {
             this.log("saveStatements");
-            var versionedStatements = [],
-                requestCfg,
+            var requestCfg,
+                versionedStatements = [],
                 i
             ;
 
@@ -520,24 +551,29 @@ TinCan client library
 
             cfg = cfg || {};
 
-            if (stmts.length > 0) {
-                for (i = 0; i < stmts.length; i += 1) {
-                    versionedStatements.push(
-                        stmts[i].asVersion( this.version )
-                    );
-                }
-
-                requestCfg = {
-                    url: "statements",
-                    method: "POST",
-                    data: JSON.stringify(versionedStatements)
-                };
+            if (stmts.length === 0) {
                 if (typeof cfg.callback !== "undefined") {
-                    requestCfg.callback = cfg.callback;
+                    cfg.callback.apply(this, ["no statements"]);
                 }
-
-                return this.sendRequest(requestCfg);
+                return;
             }
+
+            for (i = 0; i < stmts.length; i += 1) {
+                versionedStatements.push(
+                    stmts[i].asVersion( this.version )
+                );
+            }
+
+            requestCfg = {
+                url: "statements",
+                method: "POST",
+                data: JSON.stringify(versionedStatements)
+            };
+            if (typeof cfg.callback !== "undefined") {
+                requestCfg.callback = cfg.callback;
+            }
+
+            return this.sendRequest(requestCfg);
         },
 
         /**
