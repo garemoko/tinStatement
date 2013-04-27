@@ -76,14 +76,18 @@ $(function(){
 	var setDebugDefaults = true;
 	
 	if (setDebugDefaults){
-		$('#endpoint0').val('https://mrandrewdownes.waxlrs.com/TCAPI/');
-		$('#basicLogin0').val('gddikCN6KrbdWZaXq36T');
-		$('#basicPass0').val('b7Q21MPlattwRn964bVW');
+		$('#endpoint0').val('http://cloud.scorm.com/ScormEngineInterface/TCAPI/public/');
+		$('#basicLogin0').val('x');
+		$('#basicPass0').val('x');
 		$('#actorAgentName1').val('Andrew Downes');
 		$('#actorAgentFunctionalIdentifier1').val('mrdownes@hotmail.com');
 		$('#verbId').val('http://tincanapi.co.uk/tinrepo/verbs/make_moderator');
 		$('#verbDisplayValue0').val('make moderator');
 		$('#verbDisplayValue1').val('make moderator');
+		$('#activityId').val('http://tincanapi.co.uk/exampleactivity');
+		$('#activityType').val('http://tincanapi.co.uk/exampleactivity');
+		$('#activityNameValue0').val('example activity');
+		$('#activityNameValue1').val('example activity');
 	}
 	
 });
@@ -115,14 +119,25 @@ function statementGeneratorSendStatement()
 	{
 		case 'Agent':
 			var myActor;
-			if ($('#actor').find('.agent:first').find('.functionalIdentifierType') == 'account')
+			var myActorFunctionalIdentifierType = $('#actor').find('.agent:first').find('.functionalIdentifierType').val();
+			console.log (myActorFunctionalIdentifierType);
+			if (myActorFunctionalIdentifierType == 'account')
 			{
 				myActor= new TinCan.Agent({
-				name : $('#actor').find('.agent:first').find('.name').val(),
-				account: {
-					name:$('#actor').find('.agent:first').find('.accountHomePage').val(),
-					homePage:$('#actor').find('.agent:first').find('.accountName').val()
-					}
+					name : $('#actor').find('.agent:first').find('.name').val(),
+					account: {
+						name:$('#actor').find('.agent:first').find('.accountHomePage').val(),
+						homePage:$('#actor').find('.agent:first').find('.accountName').val()
+					},
+					objectType: "Agent"
+				});
+			}
+			else if (myActorFunctionalIdentifierType == 'mbox')
+			{
+				myActor= new TinCan.Agent({
+					name : $('#actor').find('.agent:first').find('.name').val(),
+					mbox : $('#actor').find('.agent:first').find('.functionalIdentifier').val(),
+					objectType: "Agent"
 				});
 			}
 			else
@@ -130,7 +145,7 @@ function statementGeneratorSendStatement()
 				myActor= new TinCan.Agent({
 				name : $('#actor').find('.agent:first').find('.name').val()
 				});
-				myActor[$('#actor').find('.agent:first').find('.functionalIdentifierType').val()] = $('#actor').find('.agent:first').find('.functionalIdentifier').val();
+				myActor[myActorFunctionalIdentifierType] = $('#actor').find('.agent:first').find('.functionalIdentifier').val();
 				myActor.objectType = "Agent";
 			}
 						
