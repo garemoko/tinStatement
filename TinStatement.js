@@ -114,97 +114,22 @@ function statementGeneratorSendStatement()
 	});
 	
 	
-	//actor - TODO: factor this better
 	switch($('#actorObjectType').val())
 	{
 		case 'Agent':
-			var myActor;
-			var myActorFunctionalIdentifierType = $('#actor').find('.agent:first').find('.functionalIdentifierType').val();
-			console.log (myActorFunctionalIdentifierType);
-			if (myActorFunctionalIdentifierType == 'account')
-			{
-				myActor= new TinCan.Agent({
-					name : $('#actor').find('.agent:first').find('.name').val(),
-					account: {
-						name:$('#actor').find('.agent:first').find('.accountHomePage').val(),
-						homePage:$('#actor').find('.agent:first').find('.accountName').val()
-					},
-					objectType: "Agent"
-				});
-			}
-			else if (myActorFunctionalIdentifierType == 'mbox')
-			{
-				myActor= new TinCan.Agent({
-					name : $('#actor').find('.agent:first').find('.name').val(),
-					mbox : $('#actor').find('.agent:first').find('.functionalIdentifier').val(),
-					objectType: "Agent"
-				});
-			}
-			else
-			{
-				myActor= new TinCan.Agent({
-				name : $('#actor').find('.agent:first').find('.name').val()
-				});
-				myActor[myActorFunctionalIdentifierType] = $('#actor').find('.agent:first').find('.functionalIdentifier').val();
-				myActor.objectType = "Agent";
-			}
-						
-			myTinCan.actor = myActor;
+			myActor = getActor($('#actor').find('.agent:first'));
 		break;
 		case 'Group':
-			var myActor;
-			if ($('#actor').find('.group:first').find('.functionalIdentifierType') == 'account')
-			{
-				myActor= new TinCan.Group({
-				name : $('#actor').find('.group:first').find('.name').val(),
-				account: {
-					name:$('#actor').find('.group:first').find('.accountHomePage').val(),
-					homePage:$('#actor').find('.group:first').find('.accountName').val()
-					}
-				});
-			}
-			else
-			{
-				myActor= new TinCan.Group({
-				name : $('#actor').find('.group:first').find('.name').val()
-				//$('#actor').find('.group:first').find('.functionalIdentifierType').val() : $('#actor').find('.group:first').find('.functionalIdentifier').val()
-				});
-				myActor[$('#actor').find('.group:first').find('.functionalIdentifierType').val()] = $('#actor').find('.group:first').find('.functionalIdentifier').val();
-			}
+		console.log('1');
+			var myActor = getActor($('#actor').find('.group:first'), 'Group');
+			console.log(JSON.stringify(myActor));
 			 $('#actor').find('.agent').each(function(index){
-			 	var agentToAddToGroup = new TinCan.Agent({
-				name : $(this).find('.name').val(),
-				mbox : $(this).find('.mbox').val(),
-				mbox_sha1sum: $(this).find('.mbox_sha1sum').val(),
-				openid: $(this).find('.openid').val(),
-				account: {
-					name: $(this).find('.accountHomePage').val(),
-					homePage: $(this).find('.accountName').val()
-					}
-				});
-				if ($(this).find('.functionalIdentifierType') == 'account')
-				{
-					myActor= new TinCan.Agent({
-					name : $(this).find('.name').val(),
-					account: {
-						name:$(this).find('.accountName').val(),
-						homePage:$(this).find('.accountHomePage').val()
-						}
-					});
-				}
-				else
-				{
-					myActor= new TinCan.Agent({
-					name : $(this).find('.name').val()
-					//$(this).find('.functionalIdentifierType').val() :$(this).find('.functionalIdentifier').val()
-					});
-					myActor[$(this).find('.functionalIdentifierType').val()] = $(this).find('.functionalIdentifier').val();
-				}
-
-				myActor.member[index] = agentToAddToGroup;
+			 	var agentToAddToGroup = getActor($(this));
+				myActor.member.push(agentToAddToGroup);
 			 });
 		break;
 	}
+	myTinCan.actor = myActor;
 	
 	
 
@@ -258,32 +183,15 @@ function statementGeneratorSendStatement()
 			myTarget = myActivity;
 		break;
 		case "Agent":
-			var myObjectAgent;
-			if ($('#objectAgent').find('.agent:first').find('.functionalIdentifierType').val() == 'account')
-			{
-				console.log('account');
-				myObjectAgent= new TinCan.Agent({
-				name : $('#objectAgent').find('.agent:first').find('.name').val(),
-				objectType : "Agent",
-				account: {
-					name:$('#objectAgent').find('.agent:first').find('.accountHomePage').val(),
-					homePage:$('#objectAgent').find('.agent:first').find('.accountName').val()
-					}
-				});
-				
-				console.log ('myActor: ' + JSON.stringify(myActor));
-			}
-			else
-			{
-				console.log($('#objectAgent').find('.functionalIdentifierType').val());
-				myObjectAgent= new TinCan.Agent({
-				name : $('#objectAgent').find('.agent:first').find('.name').val()
-				});
-				myObjectAgent[$('#objectAgent').find('.agent:first').find('.functionalIdentifierType').val()] = $('#objectAgent').find('.agent:first').find('.functionalIdentifier').val();
-				myObjectAgent.objectType = "Agent";
-			}
-						
+			var myObjectAgent = getActor($('#objectAgent').find('.agent:first'));
 			myTarget = myObjectAgent;
+		break;
+		case 'Group':
+			var myObjectAgent = getActor($('#objectAgent').find('.group:first'), 'Group');
+			 $('#objectAgent').find('.agent').each(function(index){
+			 	var agentToAddToGroup = getActor($(this));
+				myObjectAgent.member.push(agentToAddToGroup);
+			 });
 		break;
 		
 	}

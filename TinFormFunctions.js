@@ -325,6 +325,40 @@ function bubbleInputValuesUp(objectArray)
 	
 }
 
+function getActor(jQueryAgent,objectType)
+{
+	//default to agent
+	objectType = typeof objectType !== 'undefined' ? objectType : 'Agent';
+	var rtnActor;
+	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
+	if (rtnActorFunctionalIdentifierType == 'account')
+	{
+		rtnActor= new TinCan[objectType]({
+			name : jQueryAgent.find('.name').val(),
+			account: {
+				name:jQueryAgent.find('.accountHomePage').val(),
+				homePage:jQueryAgent.find('.accountName').val()
+			}
+		});
+	}
+	else if (rtnActorFunctionalIdentifierType == 'mbox')
+	{
+		rtnActor= new TinCan[objectType]({
+			name : jQueryAgent.find('.name').val(),
+			mbox : jQueryAgent.find('.functionalIdentifier').val()
+		});
+	}
+	else
+	{
+		rtnActor= new TinCan[objectType]({
+		name : jQueryAgent.find('.name').val()
+		});
+		rtnActor[rtnActorFunctionalIdentifierType] = jQueryAgent.find('.functionalIdentifier').val();
+	}
+	rtnActor.objectType = objectType;
+	return rtnActor;
+}
+
 
 //=====================UTILITY FUNCTIONS==============
 
