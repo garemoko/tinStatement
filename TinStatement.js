@@ -107,7 +107,7 @@ function statementGeneratorSendStatement()
 	$('#lrs').find('.lrs').each(function(index){
 		var myLRS = new TinCan.LRS({
 			endpoint:$(this).find('.endpoint').val(), 
-			version: "0.95",
+			version: "1.0.0",
 			auth: 'Basic ' + Base64.encode($(this).find('.basicLogin').val() + ':' + $(this).find('.basicPass').val())
 		});
 		myTinCan.recordStores[index] = myLRS;
@@ -196,8 +196,6 @@ function statementGeneratorSendStatement()
 		
 	}
 	
-	console.log ('myActor: ' + JSON.stringify(myActor));
-	console.log ('target: ' + JSON.stringify(deleteEmptyProperties(myTarget)));
 	var stmt = new TinCan.Statement({
 		actor : deleteEmptyProperties(myActor),
 		verb : deleteEmptyProperties(myVerb),
