@@ -333,12 +333,13 @@ function getActor(jQueryAgent,objectType)
 	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
 	if (rtnActorFunctionalIdentifierType == 'account')
 	{
+		var myAgentAccount = new TinCan.AgentAccount({
+			name:jQueryAgent.find('.accountName').val(),
+			homePage:jQueryAgent.find('.accountHomePage').val()
+		})
 		rtnActor= new TinCan[objectType]({
 			name : jQueryAgent.find('.name').val(),
-			account: {
-				name:jQueryAgent.find('.accountHomePage').val(),
-				homePage:jQueryAgent.find('.accountName').val()
-			}
+			account: myAgentAccount
 		});
 	}
 	else if (rtnActorFunctionalIdentifierType == 'mbox')

@@ -107,13 +107,13 @@ function statementGeneratorSendStatement()
 	$('#lrs').find('.lrs').each(function(index){
 		var myLRS = new TinCan.LRS({
 			endpoint:$(this).find('.endpoint').val(), 
-			version: "1.0.0",
+			version: "0.95",
 			auth: 'Basic ' + Base64.encode($(this).find('.basicLogin').val() + ':' + $(this).find('.basicPass').val())
 		});
 		myTinCan.recordStores[index] = myLRS;
 	});
 	
-	
+	var myActor;
 	switch($('#actorObjectType').val())
 	{
 		case 'Agent':
@@ -121,7 +121,7 @@ function statementGeneratorSendStatement()
 		break;
 		case 'Group':
 		console.log('1');
-			var myActor = getActor($('#actor').find('.group:first'), 'Group');
+			myActor = getActor($('#actor').find('.group:first'), 'Group');
 			console.log(JSON.stringify(myActor));
 			 $('#actor').find('.agent').each(function(index){
 			 	var agentToAddToGroup = getActor($(this));
@@ -197,9 +197,9 @@ function statementGeneratorSendStatement()
 	}
 	
 	var stmt = new TinCan.Statement({
-		actor : deleteEmptyProperties(myActor),
-		verb : deleteEmptyProperties(myVerb),
-		target : deleteEmptyProperties(myTarget)
+		actor : myActor,
+		verb : myVerb,
+		target : myTarget
 	},true);
 	
 	console.log ('sending: ' + JSON.stringify(stmt));

@@ -190,7 +190,8 @@ TinCan client library
                     this.account = new TinCan.AgentAccount (cfg.account);
                 }
             }
-            for (i = 0; i < directProps.length; i++) {
+
+            for (i = 0; i < directProps.length; i += 1) {
                 if (cfg.hasOwnProperty(directProps[i]) && cfg[directProps[i]] !== null) {
                     val = cfg[directProps[i]];
                     if (directProps[i] === "mbox" && val.indexOf("mailto:") === -1) {
