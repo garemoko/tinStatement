@@ -181,8 +181,8 @@ in a live situation.
 						<!--<option value="Interaction">Interaction</option>-->
 						<option value="Agent">Agent</option>
 						<option value="Group">Group</option>
-						<!--<option value="SubStatement">SubStatement</option>
-						<option value="StatementRef">StatementRef</option>-->
+						<!--<option value="SubStatement">SubStatement</option>-->
+						<option value="StatementRef">StatementRef</option>
 					</select></td>
 				</tr>
 			</table>
@@ -248,8 +248,16 @@ in a live situation.
 			<div class="displayNone">
 				<h3>SubStatement</h3>
 			</div>
-			<div class="displayNone">
+			<div id="objectStatementRef" class="displayNone statementRefSubSection">
 				<h3>StatementRef</h3>
+				<table>
+				<tr>
+					<td class="label">id:</td>
+					<td>
+					<input type="text" name="statementRefId" id="statementRefId" class="required statementRefId" />
+					</td>
+				</tr>
+				</table>
 			</div>
 		</div>
 

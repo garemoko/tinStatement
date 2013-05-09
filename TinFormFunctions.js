@@ -42,6 +42,7 @@ function ObjectTypeChanged (event)
 	//Hide all subsections (if they exist)
 	$('#' + elementId).find('.activitySubSection').addClass('displayNone');
 	$('#' + elementId).find('.agentSubSection').addClass('displayNone');
+	$('#' + elementId).find('.StatementRefSubSection').addClass('displayNone');
 	//hide Agent add/remove buttons (used for groups)
 	$('#' + elementId).find('.agentAdd').addClass('displayNone');
 	$('#' + elementId).find('.agentRemove').addClass('displayNone');
@@ -79,6 +80,10 @@ function ObjectTypeChanged (event)
 	case 'Activity':
 		//display activitysubsection (if found)
 		$('#' + elementId).find('.activitySubSection').removeClass('displayNone');
+	break;
+	case 'StatementRef':
+		//display activitysubsection (if found)
+		$('#' + elementId).find('.statementRefSubSection').removeClass('displayNone');
 	break;
 	}
 		

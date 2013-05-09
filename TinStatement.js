@@ -120,7 +120,6 @@ function statementGeneratorSendStatement()
 			myActor = getActor($('#actor').find('.agent:first'));
 		break;
 		case 'Group':
-		console.log('1');
 			myActor = getActor($('#actor').find('.group:first'), 'Group');
 			console.log(JSON.stringify(myActor));
 			 $('#actor').find('.agent').each(function(index){
@@ -192,6 +191,9 @@ function statementGeneratorSendStatement()
 				myObjectAgent.member.push(agentToAddToGroup);
 			 });
 			 myTarget = myObjectAgent;
+		break;
+		case 'StatementRef':
+			myTarget = new TinCan.StatementRef({id: $('#statementRefId').val()});
 		break;
 		
 	}
