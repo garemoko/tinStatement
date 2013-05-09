@@ -183,8 +183,7 @@ function statementGeneratorSendStatement()
 			myTarget = myActivity;
 		break;
 		case "Agent":
-			var myObjectAgent = getActor($('#objectAgent').find('.agent:first'));
-			myTarget = myObjectAgent;
+			myTarget = getActor($('#objectAgent').find('.agent:first'));
 		break;
 		case 'Group':
 			var myObjectAgent = getActor($('#objectAgent').find('.group:first'), 'Group');
@@ -192,6 +191,7 @@ function statementGeneratorSendStatement()
 			 	var agentToAddToGroup = getActor($(this));
 				myObjectAgent.member.push(agentToAddToGroup);
 			 });
+			 myTarget = myObjectAgent;
 		break;
 		
 	}

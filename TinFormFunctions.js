@@ -331,7 +331,12 @@ function getActor(jQueryAgent,objectType)
 	objectType = typeof objectType !== 'undefined' ? objectType : 'Agent';
 	var rtnActor;
 	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
-	if (rtnActorFunctionalIdentifierType == 'account')
+	
+	if ((objectType = 'Group') && (jQueryAgent.find('.functionalIdentifier').val() == ''))
+	{
+		rtnActor= new TinCan[objectType];
+	}
+	else if (rtnActorFunctionalIdentifierType == 'account')
 	{
 		var myAgentAccount = new TinCan.AgentAccount({
 			name:jQueryAgent.find('.accountName').val(),
