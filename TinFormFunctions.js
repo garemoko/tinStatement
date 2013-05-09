@@ -42,6 +42,7 @@ function ObjectTypeChanged (event)
 	//Hide all subsections (if they exist)
 	$('#' + elementId).find('.activitySubSection').addClass('displayNone');
 	$('#' + elementId).find('.agentSubSection').addClass('displayNone');
+	$('#' + elementId).find('.StatementRefSubSection').addClass('displayNone');
 	//hide Agent add/remove buttons (used for groups)
 	$('#' + elementId).find('.agentAdd').addClass('displayNone');
 	$('#' + elementId).find('.agentRemove').addClass('displayNone');
@@ -79,6 +80,10 @@ function ObjectTypeChanged (event)
 	case 'Activity':
 		//display activitysubsection (if found)
 		$('#' + elementId).find('.activitySubSection').removeClass('displayNone');
+	break;
+	case 'StatementRef':
+		//display activitysubsection (if found)
+		$('#' + elementId).find('.statementRefSubSection').removeClass('displayNone');
 	break;
 	}
 		
@@ -231,6 +236,12 @@ function appendLRS()
 						<input type="text" name="basicPass'+ lrsCount + '" id="basicPass'+ lrsCount + '" class="required basicPass"/>\
 						</td>\
 					</tr>\
+					<tr>\
+						<td class="label">Version:</td>\
+						<td>\
+						<input type="text" name="version'+ lrsCount + '" id="version'+ lrsCount + '" class="required version" value= "1.0.0"/>\
+						</td>\
+					</tr>\
 				</table>\
 			</div>\
 	').appendTo('#lrs');
@@ -323,6 +334,46 @@ function bubbleInputValuesUp(objectArray)
 		}
 	});
 	
+}
+
+function getActor(jQueryAgent,objectType)
+{
+	//default to agent
+	objectType = typeof objectType !== 'undefined' ? objectType : 'Agent';
+	var rtnActor;
+	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
+	
+	if ((objectType == 'Group') && (jQueryAgent.find('.functionalIdentifier').val() == ''))
+	{
+		rtnActor= new TinCan[objectType];
+	}
+	else if (rtnActorFunctionalIdentifierType == 'account')
+	{
+		var myAgentAccount = new TinCan.AgentAccount({
+			name:jQueryAgent.find('.accountName').val(),
+			homePage:jQueryAgent.find('.accountHomePage').val()
+		})
+		rtnActor= new TinCan[objectType]({
+			name : jQueryAgent.find('.name').val(),
+			account: myAgentAccount
+		});
+	}
+	else if (rtnActorFunctionalIdentifierType == 'mbox')
+	{
+		rtnActor= new TinCan[objectType]({
+			name : jQueryAgent.find('.name').val(),
+			mbox : jQueryAgent.find('.functionalIdentifier').val()
+		});
+	}
+	else
+	{
+		rtnActor= new TinCan[objectType]({
+		name : jQueryAgent.find('.name').val()
+		});
+		rtnActor[rtnActorFunctionalIdentifierType] = jQueryAgent.find('.functionalIdentifier').val();
+	}
+	rtnActor.objectType = objectType;
+	return rtnActor;
 }
 
 

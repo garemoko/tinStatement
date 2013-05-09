@@ -38,25 +38,27 @@ in a live situation.
 		<script src="js-lib/jquery-1.7.1.min.js"></script>
 
 		<!-- Rustici's Tin Can functions - call these to access the Tin Can API-->
-		<script src="tincanjs/TinCan.js"></script>
-		<script src="tincanjs/Utils.js"></script>
-		<script src="tincanjs/Activity.js"></script>
-		<script src="tincanjs/ActivityDefinition.js"></script>
-		<script src="tincanjs/ActivityDefinition.js"></script>
-		<script src="tincanjs/Agent.js"></script>
-		<script src="tincanjs/AgentAccount.js"></script>
-		<script src="tincanjs/Context.js"></script>
-		<script src="tincanjs/Group.js"></script>
-		<script src="tincanjs/InteractionComponent.js"></script>
-		<script src="tincanjs/LRS.js"></script>
-		<script src="tincanjs/Result.js"></script>
-		<script src="tincanjs/Score.js"></script>
-		<script src="tincanjs/State.js"></script>
-		<script src="tincanjs/Statement.js"></script>
-		<script src="tincanjs/StatementRef.js"></script>
-		<script src="tincanjs/StatementsResult.js"></script>
-		<script src="tincanjs/SubStatement.js"></script>
-		<script src="tincanjs/Verb.js"></script>
+		<script type="text/javascript" src="tincanjs/TinCan.js"></script>
+		<script type="text/javascript" src="tincanjs/Utils.js"></script>
+		<script type="text/javascript" src="tincanjs/LRS.js"></script>
+		<script type="text/javascript" src="tincanjs/AgentAccount.js"></script>
+		<script type="text/javascript" src="tincanjs/Agent.js"></script>
+		<script type="text/javascript" src="tincanjs/Group.js"></script>
+		<script type="text/javascript" src="tincanjs/Verb.js"></script>
+		<script type="text/javascript" src="tincanjs/Result.js"></script>
+		<script type="text/javascript" src="tincanjs/Score.js"></script>
+		<script type="text/javascript" src="tincanjs/Context.js"></script>
+		<script type="text/javascript" src="tincanjs/ContextActivities.js"></script>
+		<script type="text/javascript" src="tincanjs/Activity.js"></script>
+		<script type="text/javascript" src="tincanjs/InteractionComponent.js"></script>
+		<script type="text/javascript" src="tincanjs/ActivityDefinition.js"></script>
+		<script type="text/javascript" src="tincanjs/ActivityProfile.js"></script>
+		<script type="text/javascript" src="tincanjs/StatementRef.js"></script>
+		<script type="text/javascript" src="tincanjs/SubStatement.js"></script>
+		<script type="text/javascript" src="tincanjs/Statement.js"></script>
+		<script type="text/javascript" src="tincanjs/StatementsResult.js"></script>
+		<script type="text/javascript" src="tincanjs/State.js"></script>
+
 
 		<!-- Base64 
 		<script src="http://tin-can-can.googlecode.com/files/base64.js"></script>-->
@@ -178,9 +180,9 @@ in a live situation.
 						<option value="Activity" selected="selected">Activity</option>
 						<!--<option value="Interaction">Interaction</option>-->
 						<option value="Agent">Agent</option>
-						<!--<option value="Group">Group</option>-->
-						<!--<option value="SubStatement">SubStatement</option>
-						<option value="StatementRef">StatementRef</option>-->
+						<option value="Group">Group</option>
+						<!--<option value="SubStatement">SubStatement</option>-->
+						<option value="StatementRef">StatementRef</option>
 					</select></td>
 				</tr>
 			</table>
@@ -246,8 +248,16 @@ in a live situation.
 			<div class="displayNone">
 				<h3>SubStatement</h3>
 			</div>
-			<div class="displayNone">
+			<div id="objectStatementRef" class="displayNone statementRefSubSection">
 				<h3>StatementRef</h3>
+				<table>
+				<tr>
+					<td class="label">id:</td>
+					<td>
+					<input type="text" name="statementRefId" id="statementRefId" class="required statementRefId" />
+					</td>
+				</tr>
+				</table>
 			</div>
 		</div>
 
