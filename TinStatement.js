@@ -107,7 +107,7 @@ function statementGeneratorSendStatement()
 	$('#lrs').find('.lrs').each(function(index){
 		var myLRS = new TinCan.LRS({
 			endpoint:$(this).find('.endpoint').val(), 
-			version: "0.95",
+			version: $(this).find('.version').val(),
 			auth: 'Basic ' + Base64.encode($(this).find('.basicLogin').val() + ':' + $(this).find('.basicPass').val())
 		});
 		myTinCan.recordStores[index] = myLRS;

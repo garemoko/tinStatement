@@ -236,6 +236,12 @@ function appendLRS()
 						<input type="text" name="basicPass'+ lrsCount + '" id="basicPass'+ lrsCount + '" class="required basicPass"/>\
 						</td>\
 					</tr>\
+					<tr>\
+						<td class="label">Version:</td>\
+						<td>\
+						<input type="text" name="version'+ lrsCount + '" id="version'+ lrsCount + '" class="required version" value= "1.0.0"/>\
+						</td>\
+					</tr>\
 				</table>\
 			</div>\
 	').appendTo('#lrs');
@@ -337,7 +343,7 @@ function getActor(jQueryAgent,objectType)
 	var rtnActor;
 	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
 	
-	if ((objectType = 'Group') && (jQueryAgent.find('.functionalIdentifier').val() == ''))
+	if ((objectType == 'Group') && (jQueryAgent.find('.functionalIdentifier').val() == ''))
 	{
 		rtnActor= new TinCan[objectType];
 	}
