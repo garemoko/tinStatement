@@ -67,6 +67,10 @@ $(function(){
 	$('#objectAgentAdd').click({elementId: 'objectAgent'},appendAgentOnEvent);
 	$('#objectAgentRemove').click({elementId: 'objectAgent', propertyClass: 'agent', minimum:1},removeProperty);
 
+	//Result
+	$('#resultExtensionRemove').addClass('displayNone')
+	$('#resultExtensionAdd').click({elementId: 'result', propertyClass: 'extension', languageMap: extensionMap},appendLanguageMapOnEvent); 
+	$('#resultExtensionRemove').click({elementId: 'result', propertyClass: 'extension', minimum:0},removeProperty);
 
 
 	//send statement
@@ -145,7 +149,7 @@ function statementGeneratorSendStatement()
 	 
 	
 	//Object
-	//TODO: ADD OTHER OBJECT TYPES
+	//TODO: ADD substatements
 	var myTarget;
 	
 	switch ($('#objectType').val())
@@ -162,12 +166,20 @@ function statementGeneratorSendStatement()
 			   myActivityDefinitionDescription[$(this).find('.descriptionKey').val()] = $(this).find('.descriptionValue').val()
 			 });
 			 var myActivityDefinitionExtensions = new Object();
+			 var myActivityDefinitionExtensionsLength = 0;
 			  $('#activity').find('.extension').each(function(index) {
+			  	myActivityDefinitionExtensionsLength++
 			   myActivityDefinitionExtensions[$(this).find('.extensionKey').val()] = $(this).find('.extensionValue').val()
 			 });
 			 
+			 if (myActivityDefinitionExtensionsLength  == 0)
+			{
+				myActivityDefinitionExtensions  = null;
+			}
+			 
 			 var myActivityDefinition = new TinCan.ActivityDefinition({
 				type : $('#activity').find('.activityType').val(),
+				moreInfo : $('#activity').find('.moreInfo').val(),
 				name:  myActivityDefinitionName,
 				description:  myActivityDefinitionDescription,
 				extensions:  myActivityDefinitionExtensions
@@ -198,10 +210,49 @@ function statementGeneratorSendStatement()
 		
 	}
 	
+	//Result
+	var myScore = new TinCan.Score({
+		scaled :  $('#result').find('.scaled').val(),
+        raw : $('#result').find('.raw').val(),
+        min : $('#result').find('.min').val(),
+        max : $('#result').find('.max').val()
+	});
+	
+	if (($('#result').find('.scaled').val() == "") && ($('#result').find('.raw').val() == "") && ($('#result').find('.min').val() == "") && ($('#result').find('.max').val() == ""))
+	{
+		myScore = null;
+	}
+
+
+	var myResultExtensions = new Object();
+	myResultExtensionsLength = 0;
+	$('#result').find('.extension').each(function(index) {
+		myResultExtensions[$(this).find('.extensionKey').val()] = $(this).find('.extensionValue').val();
+		myResultExtensionsLength++
+	});
+	
+	if (myResultExtensionsLength == 0)
+	{
+		myResultExtensions = null;
+	}
+	
+	var myResult = new TinCan.Result({
+		score : myScore,
+		completion : $('#result').find('.completed').val(),
+        duration : $('#result').find('.duration').val(),
+        response : $('#result').find('.response').val(),
+        success : $('#result').find('.success').val(),
+        extensions : myResultExtensions
+	});
+	
+	
+	
+	
 	var stmt = new TinCan.Statement({
 		actor : myActor,
 		verb : myVerb,
-		target : myTarget
+		target : myTarget,
+		result : myResult
 	},true);
 	
 	console.log ('sending: ' + JSON.stringify(stmt));

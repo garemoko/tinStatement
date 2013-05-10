@@ -384,13 +384,22 @@ function deleteEmptyProperties(objectToTest)
 {
 
     if (typeof objectToTest=="object"){
+    	var numOfProps, numOfNullProps
         for (i in objectToTest) {
+        	numOfProps++
             if (objectToTest[i] == null || objectToTest[i] == "" || (JSON.stringify(objectToTest[i])=="{}")) {
-                delete objectToTest[i];
+                objectToTest[i] = null;
+                numOfNullProps++
             }
             else {
-                deleteEmptyProperties(objectToTest[i]);
+                objectToTest[i] = deleteEmptyProperties(objectToTest[i]);
             }
+        }
+        //if all of the properties are null
+        if (numOfProps == numOfNullProps)
+        {
+        	//the object is null
+        	return null;
         }
     }
 	return objectToTest;

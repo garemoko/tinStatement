@@ -224,7 +224,14 @@ in a live situation.
 					<input type="button" value="-Lang" name="activityDescriptionRemove" id="activityDescriptionRemove" class="button descriptionRemove"/>
 					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
 				</tr>
-				
+				<!-- Commented out until this is implement in TinCanJS
+				<tr>
+					<td class="label">moreInfo:</td>
+					<td>
+					<input type="text" name="moreInfo" id="moreInfo" class="required moreInfo" />
+					</td>
+				</tr>
+				-->
 				<tr>
 					<td  colspan="2" class="label label_heading activityDescriptionHeading">extensions:</td>
 				</tr>
@@ -259,6 +266,91 @@ in a live situation.
 				</tr>
 				</table>
 			</div>
+		</div>
+		
+		<div class="section" id="result">
+			<div class="background_div">
+				Result
+			</div>
+
+			<h2>Result</h2>
+			<p>
+				What was the result?
+			</p>
+			<table>
+				<tr>
+					<td class="label">Success?</td>
+					<td>
+					<select name="success" id="success" class="success">
+						<option value="" selected="selected"></option>
+						<option value="true">true</option>
+						<option value="false">false</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Completed?</td>
+					<td>
+					<select name="completed" id="completed" class="completed">
+						<option value="" selected="selected"></option>
+						<option value="true">true</option>
+						<option value="false">false</option>
+					</select>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Response:</td>
+					<td>
+					<input type="text" name="response" id="response" class="response" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Duration:</td>
+					<td>
+					<input type="text" name="duration" id="duration" class="duration" />
+					</td>
+				</tr>
+				<tr>
+					<td  colspan="2" class="label label_heading">Score:</td>
+				</tr>
+				<tr>
+					<td class="label">Scaled:</td>
+					<td>
+					<input type="text" name="scaled" id="scaled" class="scaled" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Raw:</td>
+					<td>
+					<input type="text" name="raw" id="raw" class="raw" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Min:</td>
+					<td>
+					<input type="text" name="min" id="min" class="min" />
+					</td>
+				</tr>
+				<tr>
+					<td class="label">Max:</td>
+					<td>
+					<input type="text" name="max" id="max" class="max" />
+					</td>
+				</tr>
+				<tr>
+					<td  colspan="2" class="label label_heading ">extensions:</td>
+				</tr>
+				<tr id="resultExtensionButtonHolder">
+					<td colspan="2" class="buttonHolder">
+					<input type="button" value="+Xtn" name="resultExtensionAdd" id="resultExtensionAdd" class="button extensionAdd" />
+					<!--Add a blank field at the bottom-->
+					<input type="button" value="-Xtn" name="resultExtensionRemove" id="resultExtensionRemove" class="button extensionRemove"/>
+					<!--Removes the first blank field (not neccessarily the bottom field)--></td>
+				</tr>
+			</table>
+
+			
+
 		</div>
 
 <input type="button" value="Send!" name="sendStatement" id="sendStatement" class="button"/>
