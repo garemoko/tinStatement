@@ -14,6 +14,7 @@ GNU General Public License for more details.
 <http://www.gnu.org/licenses/>.
 */
 
+//TODO: fix the display of the remove agent button and allow 0 agent groups
 
 /*============DOCUMENT READY==============*/
 $(function(){
@@ -33,7 +34,7 @@ $(function(){
 	appendAgent('actorAgent');
 	$('#actorObjectType').change({elementId: 'actor'},ObjectTypeChanged);
 	$('#actorAgentAdd').click({elementId: 'actorAgent'},appendAgentOnEvent);
-	$('#actorAgentRemove').click({elementId: 'actorAgent', propertyClass: 'agent', minimum:1},removeProperty);
+	$('#actorAgentRemove').click({elementId: 'actorAgent', propertyClass: 'agent', minimum:0},removeProperty);
 
 	//Set up Verb
 	var languageMap = new Array();
@@ -65,7 +66,7 @@ $(function(){
 	appendGroup('objectAgent').addClass('displayNone');
 	appendAgent('objectAgent');
 	$('#objectAgentAdd').click({elementId: 'objectAgent'},appendAgentOnEvent);
-	$('#objectAgentRemove').click({elementId: 'objectAgent', propertyClass: 'agent', minimum:1},removeProperty);
+	$('#objectAgentRemove').click({elementId: 'objectAgent', propertyClass: 'agent', minimum:0},removeProperty);
 
 	//Result
 	$('#resultExtensionRemove').addClass('displayNone')
@@ -73,6 +74,20 @@ $(function(){
 	$('#resultExtensionRemove').click({elementId: 'result', propertyClass: 'extension', minimum:0},removeProperty);
 
 
+	//Context
+	//Instructor
+	appendGroup('instructorAgent').addClass('displayNone');
+	appendAgent('instructorAgent');
+	$('#instructorObjectType').change({elementId: 'instructor'},ObjectTypeChanged);
+	$('#instructorAgentAdd').click({elementId: 'instructorAgent'},appendAgentOnEvent);
+	$('#instructorAgentRemove').click({elementId: 'instructorAgent', propertyClass: 'agent', minimum:1},removeProperty);
+	
+	//Team - can only be a group
+	appendGroup('teamAgent');
+	$('#teamAgentAdd').click({elementId: 'teamAgent'},appendAgentOnEvent);
+	$('#teamAgentRemove').click({elementId: 'teamAgent', propertyClass: 'agent', minimum:0},removeProperty).addClass('displayNone');
+	//TODO: work out why the remove button is displaying and fix it so it doesn't have to be re-hidden. 
+	
 	//send statement
 	$('#sendStatement').click(statementGeneratorSendStatement);
 	

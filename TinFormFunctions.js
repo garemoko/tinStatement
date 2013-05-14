@@ -59,7 +59,7 @@ function ObjectTypeChanged (event)
 		//If all agents have been removed (in group mode) then add one. 
 		if ($('#' + elementId).find('.agent').length < 1)
 		{
-			appendAgent(elementId);
+			appendAgent(elementId + 'Agent');
 		}
 				
 	break;
@@ -72,7 +72,7 @@ function ObjectTypeChanged (event)
 		$('#' + elementId).find('.agent').removeClass('displayNone');
 		//reveal add/remove buttons
 		$('#' + elementId).find('.agentAdd').removeClass('displayNone');
-		if ($('#' + elementId).find('.agent').length > 1)
+		if ($('#' + elementId).find('.agent').length > 0)
 		{
 			$('#' + elementId).find('.agentRemove').removeClass('displayNone');
 		}
@@ -185,15 +185,13 @@ function appendAgent(elementId)
 		}
 	});
 	
-	
 	//If this is a group, ensure the removeAgent button is visible if there are more than 1 agent
-	if (($('#'+elementId).parent().find('.objectType').val() == 'Group') && (agentsOnlyCount > 0))
+	if (($('#'+elementId).parent().find('.objectType').val() == 'Group') && (agentsOnlyCount > -1))
 	{
 		$('#' + elementId  + 'Remove').removeClass('displayNone');
 	}
 
-	
-	
+
 	return newAgent;
 }
 
