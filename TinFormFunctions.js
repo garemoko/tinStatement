@@ -341,7 +341,7 @@ function getActor(jQueryAgent,objectType)
 	var rtnActor;
 	var rtnActorFunctionalIdentifierType = jQueryAgent.find('.functionalIdentifierType').val();
 	
-	if ((objectType == 'Group') && (jQueryAgent.find('.functionalIdentifier').val() == ''))
+	if ((objectType == 'Group') && (rtnActorFunctionalIdentifierType == ''))
 	{
 		rtnActor= new TinCan[objectType];
 	}
