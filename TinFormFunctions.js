@@ -428,3 +428,26 @@ $.extend({
     return $.getUrlVars()[name];
   }
 });
+
+function stringToBoolean (inputString)
+{
+	switch(inputString)
+	{
+	case "true":
+	  return true
+	  break;
+	case "false":
+	  return false
+	  break;
+	default:
+	  return null;
+	}
+}
+
+function emptyStringIsNull (inputString)
+{
+	if (inputString == "")
+	{return null}
+	else
+	{return inputString}
+}

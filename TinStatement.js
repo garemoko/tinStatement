@@ -251,12 +251,14 @@ function statementGeneratorSendStatement()
 		myResultExtensions = null;
 	}
 	
+	
+	
 	var myResult = new TinCan.Result({
 		score : myScore,
-		completion : $('#result').find('.completed').val(),
-        duration : $('#result').find('.duration').val(),
-        response : $('#result').find('.response').val(),
-        success : $('#result').find('.success').val(),
+		completion : stringToBoolean($('#result').find('.completed').val()),
+        duration : emptyStringIsNull ($('#result').find('.duration').val()),
+        response : emptyStringIsNull ($('#result').find('.response').val()),
+        success : stringToBoolean($('#result').find('.success').val()),
         extensions : myResultExtensions
 	});
 	
