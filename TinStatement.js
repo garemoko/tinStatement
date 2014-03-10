@@ -100,9 +100,9 @@ $(function(){
 		$('#basicPass0').val('x');
 		$('#actorAgentName1').val('Andrew Downes');
 		$('#actorAgentFunctionalIdentifier1').val('mrdownes@hotmail.com');
-		$('#verbId').val('http://tincanapi.co.uk/tinrepo/verbs/make_moderator');
-		$('#verbDisplayValue0').val('make moderator');
-		$('#verbDisplayValue1').val('make moderator');
+		$('#verbId').val('http://adlnet.gov/expapi/verbs/experienced');
+		$('#verbDisplayValue0').val('experienced');
+		$('#verbDisplayValue1').val('experienced');
 		$('#activityId').val('http://tincanapi.co.uk/exampleactivity');
 		$('#activityType').val('http://tincanapi.co.uk/exampleactivity');
 		$('#activityNameValue0').val('example activity');
@@ -227,10 +227,10 @@ function statementGeneratorSendStatement()
 	
 	//Result
 	var myScore = new TinCan.Score({
-		scaled :  $('#result').find('.scaled').val(),
-        raw : $('#result').find('.raw').val(),
-        min : $('#result').find('.min').val(),
-        max : $('#result').find('.max').val()
+		scaled :  Number($('#result').find('.scaled').val()),
+        raw : Number($('#result').find('.raw').val()),
+        min : Number($('#result').find('.min').val()),
+        max : Number($('#result').find('.max').val())
 	});
 	
 	if (($('#result').find('.scaled').val() == "") && ($('#result').find('.raw').val() == "") && ($('#result').find('.min').val() == "") && ($('#result').find('.max').val() == ""))
